@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -47,12 +48,49 @@ namespace Fractal_Viewer
                     double a = (col - (width / 2.0)) * 4.0 / width; 
                     double b = (row - (height / 2.0)) * 4.0 / width;
                     double x = 0, y = 0;
+                    //Complex z = new Complex(0, 0);
+                   // Complex c = new Complex(a, b);
                     int counter = 0;
-                    while (x * x + y * y < 4 && counter < iterMax)
+                    while (x*x+y*y/*z.MagnitudeSquared()*/ < 4 && counter < iterMax)
                     {
                         double newX = x * x - y * y + a;
                         y = 2 * x * y + b;
+                         x = newX;
+                       // z.Abs();
+                       // z.Square();
+                        //z.Add(c);
+                        counter++;
+                    }
+                    if (counter < iterMax) SetPixel(col, row, GetColorMapping(counter),
+                        pixelData, stride);
+                    else SetPixel(col, row, Colors.Black, pixelData, stride);
+                }
+            }
+        }
+        void RenderBurningShip()
+        {
+            //TODO: Optimize this
+            int iterMax = 1000;
+            for (int row = 0; row < height; row++)
+            {
+                for (int col = 0; col < width; col++)
+                {
+                    double a = (col - (width / 2.0)) * 4.0 / width;
+                    double b = (row - (height / 2.0)) * 4.0 / width;
+                    double x = 0, y = 0;
+                    //Complex z = new Complex(0, 0);
+                    // Complex c = new Complex(a, b);
+                    int counter = 0;
+                    while (x * x + y * y/*z.MagnitudeSquared()*/ < 4 && counter < iterMax)
+                    {
+                        x = Math.Abs(x);
+                        y = Math.Abs(y);
+                        double newX = x * x - y * y + a;
+                        y = 2 * x * y + b;
                         x = newX;
+                        // z.Abs();
+                        // z.Square();
+                        //z.Add(c);
                         counter++;
                     }
                     if (counter < iterMax) SetPixel(col, row, GetColorMapping(counter),
@@ -65,6 +103,7 @@ namespace Fractal_Viewer
         void Render()
         {
             if (chosenFractal == "Mandelbrot Set") RenderMandelbrot();
+            else if (chosenFractal == "Burning Ship") RenderBurningShip();
             else
             {
                 for (int row = 0; row < height; row++)

@@ -16,7 +16,7 @@
         <Button x:Name="button" Content="Display" HorizontalAlignment="Left" Margin="227,353,0,0" VerticalAlignment="Top" Width="74" Click="button_Click" Grid.Column="2"/>
         <ComboBox x:Name="fractalCB" HorizontalAlignment="Left" Margin="193,184,0,0" VerticalAlignment="Top" Width="160" Grid.Column="2">
             <ComboBoxItem IsSelected="True">Mandelbrot Set</ComboBoxItem>
-            <ComboBoxItem>Another Fractal</ComboBoxItem>
+            <ComboBoxItem>Burning Ship</ComboBoxItem>
         </ComboBox>
         <Label x:Name="label" Content="Select fractal to display" HorizontalAlignment="Left" Margin="193,153,0,0" VerticalAlignment="Top" Width="160" Grid.Column="2" RenderTransformOrigin="0.475,1.423"/>
         <ComboBox x:Name="colorCB" HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Grid.Column="2" Margin="193,254,0,0">

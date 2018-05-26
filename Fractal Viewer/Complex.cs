@@ -24,11 +24,16 @@ namespace Fractal_Viewer
             re = temp;
         }
 
-        public double Magnitude()
+        public double MagnitudeSquared()
         {
-            return Math.Sqrt(re*re + im*im);
+            return re*re + im*im;
         }
 
+        public void Abs()
+        {
+            im = Math.Abs(im);
+            re = Math.Abs(re);
+        }
         public void Add(Complex number)
         {
             re += number.re;
