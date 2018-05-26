@@ -11,7 +11,7 @@ namespace Fractal_Viewer
 {
     public partial class MainWindow : Window
     {
-        BitmapSource bitmap;
+        WriteableBitmap bitmap;
         PixelFormat pf;
         int width, height, stride;
         byte[] pixelData;
@@ -19,13 +19,14 @@ namespace Fractal_Viewer
         string chosenFractal;
         string chosenColorScheme;
         public MainWindow()
-        {          
+        {
             InitializeComponent();
             pf = PixelFormats.Rgb24; //8-bit per color
             width = (int)image.Width * 2; //*2 to increase resolution
             height = (int)image.Height * 2;
-            stride = (width * pf.BitsPerPixel + 7) / 8;
+            stride = (width * pf.BitsPerPixel + 7) / 8; //+7 to complement to full byte
             pixelData = new byte[stride * height];
+            bitmap = new WriteableBitmap(width,height,96, 96,pf,null);
         }
 
         void SetPixel(int x, int y, Color c, byte[] buffer, int rawStride)
@@ -45,19 +46,19 @@ namespace Fractal_Viewer
             {
                 for (int col = 0; col < width; col++)
                 {
-                    double a = (col - (width / 2.0)) * 4.0 / width; 
+                    double a = (col - (width / 2.0)) * 4.0 / width;
                     double b = (row - (height / 2.0)) * 4.0 / width;
                     double x = 0, y = 0;
                     //Complex z = new Complex(0, 0);
-                   // Complex c = new Complex(a, b);
+                    // Complex c = new Complex(a, b);
                     int counter = 0;
-                    while (x*x+y*y/*z.MagnitudeSquared()*/ < 4 && counter < iterMax)
+                    while (x * x + y * y/*z.MagnitudeSquared()*/ < 4 && counter < iterMax)
                     {
                         double newX = x * x - y * y + a;
                         y = 2 * x * y + b;
-                         x = newX;
-                       // z.Abs();
-                       // z.Square();
+                        x = newX;
+                        // z.Abs();
+                        // z.Square();
                         //z.Add(c);
                         counter++;
                     }
@@ -117,8 +118,9 @@ namespace Fractal_Viewer
         }
         void UpdateScreen(object o, System.EventArgs e)
         {
-            bitmap = BitmapSource.Create(width, height, 96, 96, 
-                pf, null, pixelData, stride);
+            //bitmap = BitmapSource.Create(width, height, 96, 96, 
+            //    pf, null, pixelData, stride);
+            bitmap.WritePixels(new Int32Rect(0, 0, width, height), pixelData, stride, 0);
             image.Source = bitmap;
         }
         void button_Click(object sender, RoutedEventArgs e)
@@ -161,7 +163,7 @@ namespace Fractal_Viewer
                     mapping[14] = Color.FromRgb(153, 87, 0);
                     mapping[15] = Color.FromRgb(106, 52, 3);
                     return mapping[i];
-                case "2": 
+                case "2":
                     mapping[0] = Color.FromRgb(60, 25, 58);
                     mapping[1] = Color.FromRgb(3, 2, 45);
                     mapping[2] = Color.FromRgb(32, 17, 32);
@@ -192,12 +194,12 @@ namespace Fractal_Viewer
                     mapping[9] = Color.FromRgb(31, 248, 106);
                     mapping[10] = Color.FromRgb(88, 253, 45);
                     mapping[11] = Color.FromRgb(146, 82, 96);
-                    mapping[12] = Color.FromRgb(157,222, 7);
+                    mapping[12] = Color.FromRgb(157, 222, 7);
                     mapping[13] = Color.FromRgb(212, 171, 3);
                     mapping[14] = Color.FromRgb(240, 125, 19);
                     mapping[15] = Color.FromRgb(254, 82, 49);
                     return mapping[i];
-            }              
+            }
         }
     }
 }
