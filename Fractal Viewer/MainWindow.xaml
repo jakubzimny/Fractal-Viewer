@@ -13,10 +13,17 @@
             <ColumnDefinition Width="377*"/>
         </Grid.ColumnDefinitions>
         <Image x:Name="image" HorizontalAlignment="Left" Height="569" Margin="10,10,0,0" VerticalAlignment="Top" Width="803" Grid.ColumnSpan="3"/>
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="235,260,0,0" VerticalAlignment="Top" Width="74" Click="button_Click" Grid.Column="2"/>
-        <ComboBox x:Name="comboBox1" HorizontalAlignment="Left" Margin="193,184,0,0" VerticalAlignment="Top" Width="160" Grid.Column="2">
+        <Button x:Name="button" Content="Display" HorizontalAlignment="Left" Margin="227,353,0,0" VerticalAlignment="Top" Width="74" Click="button_Click" Grid.Column="2"/>
+        <ComboBox x:Name="fractalCB" HorizontalAlignment="Left" Margin="193,184,0,0" VerticalAlignment="Top" Width="160" Grid.Column="2">
             <ComboBoxItem IsSelected="True">Mandelbrot Set</ComboBoxItem>
+            <ComboBoxItem>Another Fractal</ComboBoxItem>
         </ComboBox>
-        <Label x:Name="label" Content="Select fractal to display" HorizontalAlignment="Left" Margin="193,140,0,0" VerticalAlignment="Top" Width="160" Grid.Column="2"/>
+        <Label x:Name="label" Content="Select fractal to display" HorizontalAlignment="Left" Margin="193,153,0,0" VerticalAlignment="Top" Width="160" Grid.Column="2" RenderTransformOrigin="0.475,1.423"/>
+        <ComboBox x:Name="colorCB" HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Grid.Column="2" Margin="193,254,0,0">
+            <ComboBoxItem IsSelected="True">1</ComboBoxItem>
+            <ComboBoxItem>2</ComboBoxItem>
+            <ComboBoxItem>3</ComboBoxItem>
+        </ComboBox>
+        <Label x:Name="label1" Content="Color scheme" Grid.Column="2" HorizontalAlignment="Left" Margin="193,223,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.408,-0.346" Width="160"/>
     </Grid>
 </Window>
