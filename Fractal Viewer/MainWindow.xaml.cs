@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Fractal_Viewer
 {
@@ -18,6 +19,8 @@ namespace Fractal_Viewer
         DispatcherTimer timer;
         string chosenFractal;
         string chosenColorScheme;
+        string renderTime;
+        bool screenToUpdate;
         public MainWindow()
         {
             InitializeComponent();
@@ -27,20 +30,22 @@ namespace Fractal_Viewer
             stride = (width * pf.BitsPerPixel + 7) / 8; //+7 to complement to full byte
             pixelData = new byte[stride * height];
             bitmap = new WriteableBitmap(width,height,96, 96,pf,null);
+            screenToUpdate = false;
         }
 
-        void SetPixel(int x, int y, Color c, byte[] buffer, int rawStride)
+        private void SetPixel(int x, int y, Color color, byte[] buffer, int stride)
         {
             int xIndex = x * 3;
-            int yIndex = y * rawStride;
-            buffer[xIndex + yIndex] = c.R;
-            buffer[xIndex + yIndex + 1] = c.G;
-            buffer[xIndex + yIndex + 2] = c.B;
+            int yIndex = y * stride;
+            buffer[xIndex + yIndex] = color.R;
+            buffer[xIndex + yIndex + 1] = color.G;
+            buffer[xIndex + yIndex + 2] = color.B;
         }
 
-        void RenderMandelbrot()
+        private void RenderMandelbrot()
         {
             //TODO: Optimize this
+            screenToUpdate = true;
             int iterMax = 1000;
             for (int row = 0; row < height; row++)
             {
@@ -68,9 +73,10 @@ namespace Fractal_Viewer
                 }
             }
         }
-        void RenderBurningShip()
+        private void RenderBurningShip()
         {
             //TODO: Optimize this
+            screenToUpdate = true;
             int iterMax = 1000;
             for (int row = 0; row < height; row++)
             {
@@ -101,8 +107,11 @@ namespace Fractal_Viewer
             }
         }
 
-        void Render()
+
+        private void Render()
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             if (chosenFractal == "Mandelbrot Set") RenderMandelbrot();
             else if (chosenFractal == "Burning Ship") RenderBurningShip();
             else
@@ -115,21 +124,28 @@ namespace Fractal_Viewer
                     }
                 }
             }
+            sw.Stop();
+            renderTime = sw.Elapsed.TotalSeconds.ToString()+" s";
         }
-        void UpdateScreen(object o, System.EventArgs e)
+        private void UpdateScreen(object o, System.EventArgs e)
         {
-            //bitmap = BitmapSource.Create(width, height, 96, 96, 
-            //    pf, null, pixelData, stride);
-            bitmap.WritePixels(new Int32Rect(0, 0, width, height), pixelData, stride, 0);
-            image.Source = bitmap;
+            if (screenToUpdate)
+            {
+                bitmap.WritePixels(new Int32Rect(0, 0, width, height), pixelData, stride, 0);
+                image.Source = bitmap;
+            }
+            if (renderTime != null)
+                timeTB.Text = renderTime;
+            else timeTB.Text = "Rendering...";
         }
-        void button_Click(object sender, RoutedEventArgs e)
+         private void button_Click(object sender, RoutedEventArgs e)
         {
+            renderTime = null;
             chosenFractal = fractalCB.Text;
             chosenColorScheme = colorCB.Text;
             Task t = Task.Factory.StartNew(Render);
             timer = new DispatcherTimer();
-            timer.Interval = System.TimeSpan.FromMilliseconds(100);
+            timer.Interval = System.TimeSpan.FromMilliseconds(50);
             timer.Tick += UpdateScreen;
             timer.Start();
         }
@@ -141,6 +157,7 @@ namespace Fractal_Viewer
 
         private Color GetColorMapping(int n)
         {
+            //TODO: Some gradients
             int i = n % 16;
             Color[] mapping = new Color[16];
             switch (chosenColorScheme)
