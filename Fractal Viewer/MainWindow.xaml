@@ -14,22 +14,28 @@
             <ColumnDefinition Width="66*"/>
             <ColumnDefinition Width="377*"/>
         </Grid.ColumnDefinitions>
-        <Border BorderBrush="Black" BorderThickness="2" HorizontalAlignment="Left" Height="573" Margin="8,8,8,8" VerticalAlignment="Top" Width="807" Grid.ColumnSpan="3" Background="DimGray"/>
+        <Border BorderBrush="Black" BorderThickness="2" HorizontalAlignment="Left" Height="573" Margin="8,8,8,8" VerticalAlignment="Top" Width="807" Grid.ColumnSpan="3" Background="Gray"/>
         <Image x:Name="image" HorizontalAlignment="Left" Height="569" Margin="10,10,0,0" VerticalAlignment="Top" Width="803" Grid.ColumnSpan="3"/>
-        <Button x:Name="renderButton" Content="Render" HorizontalAlignment="Left" Margin="235,330,0,0" VerticalAlignment="Top" Width="74" Click="renderButton_Click" Grid.Column="2"/>
-        <ComboBox x:Name="fractalCB" HorizontalAlignment="Left" Margin="193,184,0,0" VerticalAlignment="Top" Width="160" Grid.Column="2">
+        <Button x:Name="renderButton" Content="Render" HorizontalAlignment="Left" Margin="235,382,0,0" VerticalAlignment="Top" Width="74" Click="renderButton_Click" Grid.Column="2"/>
+        <ComboBox x:Name="fractalCB" HorizontalAlignment="Left" Margin="193,80,0,0" VerticalAlignment="Top" Width="160" Grid.Column="2">
             <ComboBoxItem IsSelected="True">Mandelbrot Set</ComboBoxItem>
             <ComboBoxItem>Burning Ship</ComboBoxItem>
+            <ComboBoxItem>Julia Set</ComboBoxItem>
         </ComboBox>
-        <Label x:Name="label" Content="Select fractal to display" HorizontalAlignment="Left" Margin="193,153,0,0" VerticalAlignment="Top" Width="160" Grid.Column="2" RenderTransformOrigin="0.475,1.423"/>
-        <ComboBox x:Name="colorCB" HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Grid.Column="2" Margin="193,254,0,0">
+        <Label x:Name="label" Content="Select fractal to display" HorizontalAlignment="Left" Margin="193,49,0,0" VerticalAlignment="Top" Width="160" Grid.Column="2" RenderTransformOrigin="0.475,1.423"/>
+        <ComboBox x:Name="colorCB" HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Grid.Column="2" Margin="193,157,0,0">
             <ComboBoxItem IsSelected="True">1</ComboBoxItem>
             <ComboBoxItem>2</ComboBoxItem>
             <ComboBoxItem>3</ComboBoxItem>
         </ComboBox>
-        <Label x:Name="label1" Content="Color scheme" Grid.Column="2" HorizontalAlignment="Left" Margin="193,223,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.408,-0.346" Width="160"/>
+        <Label x:Name="label1" Content="Color scheme" Grid.Column="2" HorizontalAlignment="Left" Margin="193,126,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.408,-0.346" Width="160"/>
         <Label x:Name="label2" Content="Rendering time:" Grid.Column="2" HorizontalAlignment="Left" Margin="226,481,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.513,-0.25" Width="93"/>
         <TextBlock x:Name="timeTB" Grid.Column="2" HorizontalAlignment="Left" Margin="235,512,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="25" Width="116"><Run Text=""/></TextBlock>
-        <Button x:Name="saveButton" Content="Save to file" Grid.Column="2" HorizontalAlignment="Left" Margin="235,372,0,0" VerticalAlignment="Top" Width="74" Click="saveButton_Click"/>
+        <Button x:Name="saveButton" Content="Save to file" Grid.Column="2" HorizontalAlignment="Left" Margin="235,429,0,0" VerticalAlignment="Top" Width="74" Click="saveButton_Click"/>
+        <Label x:Name="label3" Content="C value (works for Julia Set only):" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="2" Margin="183,204,0,0" Width="184" Height="26"/>
+        <Label x:Name="label4" Content="Real part:" Grid.Column="2" HorizontalAlignment="Left" Margin="223,235,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label5" Content="Imaginary Part:" Grid.Column="2" HorizontalAlignment="Left" Margin="223,289,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.276,-0.538"/>
+        <TextBox x:Name="reTB" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="-0.73" VerticalAlignment="Top" Width="96" Grid.Column="2" Margin="223,261,0,0" />
+        <TextBox x:Name="imTB" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0.27015" VerticalAlignment="Top" Width="90" Grid.Column="2" Margin="223,320,0,0"/>
     </Grid>
 </Window>

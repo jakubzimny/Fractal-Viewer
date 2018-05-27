@@ -21,6 +21,8 @@ namespace Fractal_Viewer
         string chosenFractal;
         string chosenColorScheme;
         string renderTime;
+        double c_re;
+        double c_im;
         public MainWindow()
         {
             InitializeComponent();
@@ -44,7 +46,6 @@ namespace Fractal_Viewer
 
         private void RenderMandelbrot()
         {
-            //TODO: Optimize this
             int iterMax = 1000;
             for (int row = 0; row < height; row++)
             {
@@ -52,15 +53,11 @@ namespace Fractal_Viewer
                 {
                     double a = (col - (width / 2.0)) * 4.0 / width;
                     double b = (row - (height / 2.0)) * 4.0 / width;
-                    // double x = 0, y = 0;
                     Complex z = new Complex(0, 0);
                     Complex c = new Complex(a, b);
                     int counter = 0;
-                    while (/*x * x + y * y*/z.MagnitudeSquared() < 4 && counter < iterMax)
+                    while (z.MagnitudeSquared() < 4 && counter < iterMax)
                     {
-                        //double newX = x * x - y * y + a;
-                        //y = 2 * x * y + b;
-                        //x = newX;
                         z.Square();
                         z.Add(c);
                         counter++;
@@ -73,7 +70,6 @@ namespace Fractal_Viewer
         }
         private void RenderBurningShip()
         {
-            //TODO: Optimize this
             int iterMax = 1000;
             for (int row = 0; row < height; row++)
             {
@@ -81,20 +77,14 @@ namespace Fractal_Viewer
                 {
                     double a = (col - (width / 2.0)) * 4.0 / width;
                     double b = (row - (height / 2.0)) * 4.0 / width;
-                    double x = 0, y = 0;
-                    //Complex z = new Complex(0, 0);
-                    // Complex c = new Complex(a, b);
+                    Complex z = new Complex(0, 0);
+                    Complex c = new Complex(a, b);
                     int counter = 0;
-                    while (x * x + y * y/*z.MagnitudeSquared()*/ < 4 && counter < iterMax)
+                    while (z.MagnitudeSquared() < 4 && counter < iterMax)
                     {
-                        x = Math.Abs(x);
-                        y = Math.Abs(y);
-                        double newX = x * x - y * y + a;
-                        y = 2 * x * y + b;
-                        x = newX;
-                        // z.Abs();
-                        // z.Square();
-                        //z.Add(c);
+                        z.Abs();
+                        z.Square();
+                        z.Add(c);
                         counter++;
                     }
                     if (counter < iterMax) SetPixel(col, row, GetColorMapping(counter),
@@ -104,12 +94,37 @@ namespace Fractal_Viewer
             }
         }
 
+        private void RenderJuliaSet()
+        {         
+            int iterMax = 1000;
+            for (int row = 0; row < height; row++)
+            {
+                for (int col = 0; col < width; col++)
+                {
+                    double a = (col - (width / 2.0)) * 4.0 / width;
+                    double b = (row - (height / 2.0)) * 4.0 / width;
+                    Complex z = new Complex(a, b);
+                    Complex c = new Complex(c_re, c_im);
+                    int counter = 0;
+                    while (z.MagnitudeSquared() < 4 && counter < iterMax)
+                    {
+                        z.Square();
+                        z.Add(c);
+                        counter++;
+                    }
+                    if (counter < iterMax) SetPixel(col, row, GetColorMapping(counter),
+                        pixelData, stride);
+                    else SetPixel(col, row, Colors.Black, pixelData, stride);
+                }
+            }
+        }
         private void Render()
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
             if (chosenFractal == "Mandelbrot Set") RenderMandelbrot();
             else if (chosenFractal == "Burning Ship") RenderBurningShip();
+            else if (chosenFractal == "Julia Set") RenderJuliaSet();
             else
             {
                 for (int row = 0; row < height; row++)
@@ -136,6 +151,19 @@ namespace Fractal_Viewer
             renderTime = null;
             chosenFractal = fractalCB.Text;
             chosenColorScheme = colorCB.Text;
+            if (chosenFractal == "Julia Set")
+            {
+                try
+                {
+                    c_re = double.Parse(reTB.Text, System.Globalization.CultureInfo.InvariantCulture);
+                    c_im = double.Parse(imTB.Text, System.Globalization.CultureInfo.InvariantCulture);
+                }
+                catch (FormatException)
+                {
+                    System.Windows.MessageBox.Show("Entered c value is not number", "Format Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
             Task t = Task.Factory.StartNew(Render);
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(100);
