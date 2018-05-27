@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Fractal_Viewer"
         mc:Ignorable="d"
-        Title="Fractal Viewer" Height="629.03" Width="1024.414">
+        Title="Fractal Viewer" Height="629.03" Width="1024.414"
+        ResizeMode="CanMinimize">
     <Grid RenderTransformOrigin="0.441,0.489" Margin="0,0,0,-1">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="574*"/>
@@ -13,7 +14,7 @@
             <ColumnDefinition Width="377*"/>
         </Grid.ColumnDefinitions>
         <Image x:Name="image" HorizontalAlignment="Left" Height="569" Margin="10,10,0,0" VerticalAlignment="Top" Width="803" Grid.ColumnSpan="3"/>
-        <Button x:Name="button" Content="Display" HorizontalAlignment="Left" Margin="235,330,0,0" VerticalAlignment="Top" Width="74" Click="button_Click" Grid.Column="2"/>
+        <Button x:Name="renderButton" Content="Render" HorizontalAlignment="Left" Margin="235,330,0,0" VerticalAlignment="Top" Width="74" Click="renderButton_Click" Grid.Column="2"/>
         <ComboBox x:Name="fractalCB" HorizontalAlignment="Left" Margin="193,184,0,0" VerticalAlignment="Top" Width="160" Grid.Column="2">
             <ComboBoxItem IsSelected="True">Mandelbrot Set</ComboBoxItem>
             <ComboBoxItem>Burning Ship</ComboBoxItem>
@@ -27,5 +28,6 @@
         <Label x:Name="label1" Content="Color scheme" Grid.Column="2" HorizontalAlignment="Left" Margin="193,223,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.408,-0.346" Width="160"/>
         <Label x:Name="label2" Content="Rendering time:" Grid.Column="2" HorizontalAlignment="Left" Margin="193,481,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.513,-0.25" Width="160"/>
         <TextBlock x:Name="timeTB" Grid.Column="2" HorizontalAlignment="Left" Margin="199,512,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="25" Width="154"><Run Text=""/></TextBlock>
+        <Button x:Name="saveButton" Content="Save to file" Grid.Column="2" HorizontalAlignment="Left" Margin="235,372,0,0" VerticalAlignment="Top" Width="74" Click="saveButton_Click"/>
     </Grid>
 </Window>

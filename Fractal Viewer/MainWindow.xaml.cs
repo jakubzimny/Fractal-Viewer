@@ -7,6 +7,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace Fractal_Viewer
 {
@@ -20,7 +21,6 @@ namespace Fractal_Viewer
         string chosenFractal;
         string chosenColorScheme;
         string renderTime;
-        bool screenToUpdate;
         public MainWindow()
         {
             InitializeComponent();
@@ -29,8 +29,8 @@ namespace Fractal_Viewer
             height = (int)image.Height * 2;
             stride = (width * pf.BitsPerPixel + 7) / 8; //+7 to complement to full byte
             pixelData = new byte[stride * height];
-            bitmap = new WriteableBitmap(width,height,96, 96,pf,null);
-            screenToUpdate = false;
+            bitmap = new WriteableBitmap(width, height, 96, 96, pf, null);
+            
         }
 
         private void SetPixel(int x, int y, Color color, byte[] buffer, int stride)
@@ -45,7 +45,6 @@ namespace Fractal_Viewer
         private void RenderMandelbrot()
         {
             //TODO: Optimize this
-            screenToUpdate = true;
             int iterMax = 1000;
             for (int row = 0; row < height; row++)
             {
@@ -53,18 +52,17 @@ namespace Fractal_Viewer
                 {
                     double a = (col - (width / 2.0)) * 4.0 / width;
                     double b = (row - (height / 2.0)) * 4.0 / width;
-                    double x = 0, y = 0;
-                    //Complex z = new Complex(0, 0);
-                    // Complex c = new Complex(a, b);
+                    // double x = 0, y = 0;
+                    Complex z = new Complex(0, 0);
+                    Complex c = new Complex(a, b);
                     int counter = 0;
-                    while (x * x + y * y/*z.MagnitudeSquared()*/ < 4 && counter < iterMax)
+                    while (/*x * x + y * y*/z.MagnitudeSquared() < 4 && counter < iterMax)
                     {
-                        double newX = x * x - y * y + a;
-                        y = 2 * x * y + b;
-                        x = newX;
-                        // z.Abs();
-                        // z.Square();
-                        //z.Add(c);
+                        //double newX = x * x - y * y + a;
+                        //y = 2 * x * y + b;
+                        //x = newX;
+                        z.Square();
+                        z.Add(c);
                         counter++;
                     }
                     if (counter < iterMax) SetPixel(col, row, GetColorMapping(counter),
@@ -76,7 +74,6 @@ namespace Fractal_Viewer
         private void RenderBurningShip()
         {
             //TODO: Optimize this
-            screenToUpdate = true;
             int iterMax = 1000;
             for (int row = 0; row < height; row++)
             {
@@ -107,7 +104,6 @@ namespace Fractal_Viewer
             }
         }
 
-
         private void Render()
         {
             Stopwatch sw = new Stopwatch();
@@ -125,29 +121,43 @@ namespace Fractal_Viewer
                 }
             }
             sw.Stop();
-            renderTime = sw.Elapsed.TotalSeconds.ToString()+" s";
+            renderTime = sw.Elapsed.TotalSeconds.ToString() + " s";
         }
         private void UpdateScreen(object o, System.EventArgs e)
         {
-            if (screenToUpdate)
-            {
-                bitmap.WritePixels(new Int32Rect(0, 0, width, height), pixelData, stride, 0);
-                image.Source = bitmap;
-            }
+            bitmap.WritePixels(new Int32Rect(0, 0, width, height), pixelData, stride, 0);
+            image.Source = bitmap;
             if (renderTime != null)
                 timeTB.Text = renderTime;
             else timeTB.Text = "Rendering...";
         }
-         private void button_Click(object sender, RoutedEventArgs e)
+        private void renderButton_Click(object sender, RoutedEventArgs e)
         {
             renderTime = null;
             chosenFractal = fractalCB.Text;
             chosenColorScheme = colorCB.Text;
             Task t = Task.Factory.StartNew(Render);
             timer = new DispatcherTimer();
-            timer.Interval = System.TimeSpan.FromMilliseconds(50);
+            timer.Interval = System.TimeSpan.FromMilliseconds(100);
             timer.Tick += UpdateScreen;
             timer.Start();
+        }
+
+        private void saveButton_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog()
+            {
+                Filter = "Image Files(*.png)|*.png|All(*.*)|*"
+            };
+            if (sfd.ShowDialog() != System.Windows.Forms.DialogResult.Cancel)
+            {
+                using (FileStream fileStream = new FileStream(sfd.FileName, FileMode.OpenOrCreate))
+                {
+                    PngBitmapEncoder encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                    encoder.Save(fileStream);
+                }
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
