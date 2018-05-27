@@ -138,7 +138,7 @@ namespace Fractal_Viewer
             chosenColorScheme = colorCB.Text;
             Task t = Task.Factory.StartNew(Render);
             timer = new DispatcherTimer();
-            timer.Interval = System.TimeSpan.FromMilliseconds(100);
+            timer.Interval = TimeSpan.FromMilliseconds(100);
             timer.Tick += UpdateScreen;
             timer.Start();
         }
@@ -209,11 +209,11 @@ namespace Fractal_Viewer
                     mapping[15] = Color.FromRgb(19, 10, 43);
                     return mapping[i];
                 default:
-                    mapping[0] = Color.FromRgb(255, 58, 71);
-                    mapping[1] = Color.FromRgb(244, 24, 117);
-                    mapping[2] = Color.FromRgb(194, 1, 190);
-                    mapping[3] = Color.FromRgb(168, 4, 213);
-                    mapping[4] = Color.FromRgb(102, 34, 250);
+                    mapping[0] = Color.FromRgb(184, 58, 71);
+                    mapping[1] = Color.FromRgb(152, 24, 117);
+                    mapping[2] = Color.FromRgb(133, 1, 190);
+                    mapping[3] = Color.FromRgb(110, 4, 213);
+                    mapping[4] = Color.FromRgb(87, 34, 250);
                     mapping[5] = Color.FromRgb(75, 55, 255);
                     mapping[6] = Color.FromRgb(56, 74, 255);
                     mapping[7] = Color.FromRgb(3, 172, 210);
