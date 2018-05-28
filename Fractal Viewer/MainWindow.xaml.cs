@@ -49,7 +49,7 @@ namespace Fractal_Viewer
             int iterMax = 1000;
             for (int row = 0; row < height; row++)
             {
-                for (int col = 0; col < width; col++)
+                Parallel.For(0, width, col =>
                 {
                     double a = (col - (width / 2.0)) * 4.0 / width;
                     double b = (row - (height / 2.0)) * 4.0 / width;
@@ -65,7 +65,7 @@ namespace Fractal_Viewer
                     if (counter < iterMax) SetPixel(col, row, GetColorMapping(counter),
                         pixelData, stride);
                     else SetPixel(col, row, Colors.Black, pixelData, stride);
-                }
+                });
             }
         }
         private void RenderBurningShip()
@@ -73,7 +73,7 @@ namespace Fractal_Viewer
             int iterMax = 1000;
             for (int row = 0; row < height; row++)
             {
-                for (int col = 0; col < width; col++)
+                Parallel.For(0, width, col =>
                 {
                     double a = (col - (width / 2.0)) * 4.0 / width;
                     double b = (row - (height / 2.0)) * 4.0 / width;
@@ -90,7 +90,7 @@ namespace Fractal_Viewer
                     if (counter < iterMax) SetPixel(col, row, GetColorMapping(counter),
                         pixelData, stride);
                     else SetPixel(col, row, Colors.Black, pixelData, stride);
-                }
+                });
             }
         }
 
@@ -99,23 +99,24 @@ namespace Fractal_Viewer
             int iterMax = 1000;
             for (int row = 0; row < height; row++)
             {
-                for (int col = 0; col < width; col++)
-                {
-                    double a = (col - (width / 2.0)) * 4.0 / width;
-                    double b = (row - (height / 2.0)) * 4.0 / width;
-                    Complex z = new Complex(a, b);
-                    Complex c = new Complex(c_re, c_im);
-                    int counter = 0;
-                    while (z.MagnitudeSquared() < 4 && counter < iterMax)
-                    {
-                        z.Square();
-                        z.Add(c);
-                        counter++;
-                    }
-                    if (counter < iterMax) SetPixel(col, row, GetColorMapping(counter),
-                        pixelData, stride);
-                    else SetPixel(col, row, Colors.Black, pixelData, stride);
-                }
+                Parallel.For(0, width, col =>
+                 {
+                     double a = (col - (width / 2.0)) * 4.0 / width;
+                     double b = (row - (height / 2.0)) * 4.0 / width;
+                     Complex z = new Complex(a, b);
+                     Complex c = new Complex(c_re, c_im);
+                     int counter = 0;
+                     while (z.MagnitudeSquared() < 4 && counter < iterMax)
+                     {
+                         z.Square();
+                         z.Add(c);
+                         counter++;
+                     }
+                     if (counter < iterMax) SetPixel(col, row, GetColorMapping(counter),
+                         pixelData, stride);
+                     else SetPixel(col, row, Colors.Black, pixelData, stride);
+                 }
+                );
             }
         }
         private void Render()
@@ -160,17 +161,17 @@ namespace Fractal_Viewer
                 }
                 catch (FormatException)
                 {
-                    System.Windows.MessageBox.Show("Entered c value is not number", "Format Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    System.Windows.MessageBox.Show("Entered c value is not number", 
+                        "Format Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
             }
             Task t = Task.Factory.StartNew(Render);
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(100);
+            timer.Interval = TimeSpan.FromMilliseconds(50);
             timer.Tick += UpdateScreen;
             timer.Start();
         }
-
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog()
