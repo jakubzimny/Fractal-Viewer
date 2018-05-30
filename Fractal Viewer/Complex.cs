@@ -8,20 +8,24 @@ namespace Fractal_Viewer
 {
     class Complex
     {
-        private double re { get; set; } //real part
-        private double im { get; set; } // imaginary part
+        public double re { get; private set; } //real part
+        public double im { get; private set; } // imaginary part
 
         public Complex(double r, double i)
         {
             re = r;
             im = i;
         }
+        public void Multiply(Complex number)
+        {
+            double temp = re * number.re - im * number.im;
+            im = im * number.re + re * number.im;
+            re = temp;
+        }
 
         public void Square()
         {
-            double temp = re * re - im * im;
-            im = 2.0 * re * im;
-            re = temp;
+            this.Multiply(this);
         }
 
         public double MagnitudeSquared()
@@ -34,10 +38,12 @@ namespace Fractal_Viewer
             im = Math.Abs(im);
             re = Math.Abs(re);
         }
+
         public void Add(Complex number)
         {
             re += number.re;
             im += number.im;
         }
+ 
     }
 }

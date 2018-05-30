@@ -21,6 +21,7 @@
             <ComboBoxItem IsSelected="True">Mandelbrot Set</ComboBoxItem>
             <ComboBoxItem>Burning Ship</ComboBoxItem>
             <ComboBoxItem>Julia Set</ComboBoxItem>
+            <ComboBoxItem>Lyapunov Fractal</ComboBoxItem>
         </ComboBox>
         <Label x:Name="label" Content="Select fractal to display" HorizontalAlignment="Left" Margin="193,49,0,0" VerticalAlignment="Top" Width="160" Grid.Column="2" RenderTransformOrigin="0.475,1.423"/>
         <ComboBox x:Name="colorCB" HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Grid.Column="2" Margin="193,157,0,0">
