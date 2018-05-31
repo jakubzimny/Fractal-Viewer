@@ -8,6 +8,7 @@ using System.Windows.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace Fractal_Viewer
 {
@@ -23,6 +24,7 @@ namespace Fractal_Viewer
         string renderTime;
         double c_re;
         double c_im;
+        List<int> sequence;
         public const int iterMax = 1000;
         public MainWindow()
         {
@@ -33,6 +35,7 @@ namespace Fractal_Viewer
             stride = width * pf.BitsPerPixel / 8; // bytes per row
             pixelData = new byte[stride * height];
             bitmap = new WriteableBitmap(width, height, 96, 96, pf, null);
+            sequence = new List<int>();
         }
 
         private void SetPixel(int x, int y, Color color, byte[] buffer, int stride)
@@ -123,7 +126,7 @@ namespace Fractal_Viewer
 
         private void RenderLyapunovFractal()
         {
-            int[] sequence = { 1,0 };
+            //int[] sequence = { 1, 0 };
             Parallel.For(0, height, row =>
             {
                 double a, b, r;
@@ -135,10 +138,10 @@ namespace Fractal_Viewer
                     double x = 0.5;
                     while (counter++ < 150)//capped at 150 for now
                     {
-                        a = (double)row / (double)height * 2+2 ;
-                        b = (double)col / (double)width * 2+2;
+                        a = (double)row / (double)height * 2 + 2;
+                        b = (double)col / (double)width * 2 + 2;
                         //Lyapunov Exponent
-                        r = sequence[counter % sequence.Length] == 1 ? b : a;
+                        r = sequence[counter % sequence.Count] == 1 ? b : a;
                         x = r * x * (1 - x);
                         lambda += Math.Log(Math.Abs(r * (1.0 - 2.0 * x)));
                     }
@@ -218,11 +221,38 @@ namespace Fractal_Viewer
                     return;
                 }
             }
+            else if (chosenFractal == "Lyapunov Fractal")
+            {
+                parseSequence();
+            }
             Task t = Task.Factory.StartNew(Render); // Render in another thread so UI stays responsive
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(50);
             timer.Tick += UpdateScreen; // every 50 miliseconds update displayed image
             timer.Start();
+        }
+
+        private  void parseSequence()
+        {
+            string s = sequenceTB.Text;
+            sequence.Clear();
+            foreach (char c in s)
+            {
+                if(!(c == '0' || c == '1'))
+                {
+                    System.Windows.MessageBox.Show("Entered sequence is not valid.\nUsing default sequence 10",
+                        "Parse Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    sequence.Clear();
+                    sequence.Add(1);
+                    sequence.Add(0);
+                    return;
+                }
+                else
+                {
+                    sequence.Add((int)c - (int)'0');
+                }
+            }
+            
         }
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
@@ -238,6 +268,37 @@ namespace Fractal_Viewer
                     PngBitmapEncoder encoder = new PngBitmapEncoder();
                     encoder.Frames.Add(BitmapFrame.Create(bitmap));
                     encoder.Save(fileStream);
+                }
+            }
+        }
+
+        private void fractalCB_DropDownClosed(object sender, EventArgs e)
+        {
+            chosenFractal = fractalCB.Text;
+            if (colorCB != null && sequenceTB!=null)
+            {
+                if (chosenFractal == "Lyapunov Fractal")
+                {
+                    colorCB.IsEnabled = false;
+                    sequenceTB.IsEnabled = true;
+                }
+                else
+                {
+                    colorCB.IsEnabled = true;
+                    sequenceTB.IsEnabled = false;
+                }
+            }
+            if (reTB != null && imTB != null)
+            {
+                if (chosenFractal != "Julia Set")
+                {
+                    reTB.IsEnabled = false;
+                    imTB.IsEnabled = false;
+                }
+                else
+                {
+                    reTB.IsEnabled = true;
+                    imTB.IsEnabled = true;
                 }
             }
         }
