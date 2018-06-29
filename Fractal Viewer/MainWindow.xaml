@@ -8,7 +8,9 @@
         Title="Fractal Viewer" Height="629.03" Width="1070.914"
         ResizeMode="CanMinimize"
         Icon="mandel.ico">
-    <Grid RenderTransformOrigin="0.441,0.489" Margin="0,0,0,-1">
+    <Grid RenderTransformOrigin="0.441,0.489" Margin="0,0,0,-1" x:Name="windowGrid"
+          MouseDown="windowGrid_MouseDown" MouseMove="windowGrid_MouseMove" 
+          MouseUp="windowGrid_MouseUp">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="574*"/>
             <ColumnDefinition Width="66*"/>
@@ -16,6 +18,15 @@
         </Grid.ColumnDefinitions>
         <Border BorderBrush="Black" BorderThickness="2" HorizontalAlignment="Left" Height="573" Margin="8,8,8,8" VerticalAlignment="Top" Width="807" Grid.ColumnSpan="3" Background="Gray"/>
         <Image x:Name="image" HorizontalAlignment="Left" Height="569" Margin="10,10,0,0" VerticalAlignment="Top" Width="803" Grid.ColumnSpan="3"/>
+        <Canvas>
+            <Rectangle
+                x:Name="selectionBox"
+                Visibility="Collapsed"
+                Stroke="Red"
+                StrokeThickness="2"
+                StrokeDashArray="1,1"
+                />
+        </Canvas>
         <Button x:Name="renderButton" Content="Render" HorizontalAlignment="Left" Margin="235,382,0,0" VerticalAlignment="Top" Width="74" Click="renderButton_Click" Grid.Column="2"/>
         <ComboBox x:Name="fractalCB" HorizontalAlignment="Left" Margin="163,53,0,0" VerticalAlignment="Top" Width="160" Grid.Column="2" DropDownClosed="fractalCB_DropDownClosed">
             <ComboBoxItem IsSelected="True">Mandelbrot Set</ComboBoxItem>
